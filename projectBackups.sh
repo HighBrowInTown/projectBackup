@@ -1,17 +1,15 @@
 #!/bin/bash -x
-#Use this script once you have initalized your project folder.
+#Use this script once you have created a new repo in github and using ssh you have cloned it in your local machine.
+
+#Settings ini
+source settings.ini
+# source /opt/projectBackups/settings.ini
 #Project Variables
-PROJECT_NAME="projectBackup_Test"
-DIR="/usr/local/src"
 PROJECT_DIR="${DIR}/${PROJECT_NAME}"
 BACKUP_TIME="$(date)"
 #Log Variables
-GET_LOG="/var/log/projectBackups.log"
 LOG_TIME=$(date "+%Y %m %d %T.%3N")
 #Git Variables
-GIT_SSH_KEY="/root/.ssh/github"
-USERNAME="Po-Pratik"
-USEREMAIL="pratik@safesquid.net"
 GIT_USERNAME=$(git config user.name)
 GIT_USEREMAIL=$(git config user.email)
 GIT_URL="git@github.com"
@@ -34,11 +32,11 @@ GIT_CONN_CHECK () {
 
 	if [ "x${USERNAME}" == "x" ] && [ "${USEREMAIL}" == "x" ]
 	then 
-		echo "${LOG_TIME} Programme Error: Username and Email Unknown!" >> "${GET_LOG}"
+		echo "${LOG_TIME} Programme Error: Username and Email Unknown!" >> "${LOG}"
 		exit 1
 	elif [ "x${GIT_USERNAME}" == "x" ] && [ "x${GIT_USEREMAIL}" == "x" ]
 	then
-		echo "${LOG_TIME} Programme Info: Setting Username and Email" >> "${GET_LOG}"
+		echo "${LOG_TIME} Programme Info: Setting Username and Email" >> "${LOG}"
 		git config user.name "${USERNAME}"
 		git config user.email "${USEREMAIL}"
 	fi
@@ -46,16 +44,16 @@ GIT_CONN_CHECK () {
 	GIT_INIT_DIR="$(git rev-parse --is-inside-work-tree)"
 	if [ "x${GIT_INIT_DIR}" != "xtrue" ]
 	then 
-		echo "${LOG_TIME} Programme Info: Initializing Repo" >> "${GET_LOG}"
+		echo "${LOG_TIME} Programme Info: Initializing Repo" >> "${LOG}"
 		git init
 	fi
 
 	if [ "${SSH_CONN}" == "255" ]
 	then
-		echo "${LOG_TIME} Programme Error: SSH Permission denied (publickey)." >> "${GET_LOG}"
+		echo "${LOG_TIME} Programme Error: SSH Permission denied (publickey)." >> "${LOG}"
 		exit 1
 	else
-		git remote add origin "${GIT_PROJECT_URL}"	
+		git remote add origin "${GIT_PROJECT_URL}"
 	fi
 	
 }
@@ -65,7 +63,7 @@ GIT_COMMITS () {
 	GIT_CONN_CHECK
     git add "${1}"
 	git commit -m "Performing backup: ${1} - ${BACKUP_TIME}"
-	git push -u origin master
+	git push -u origin main
 
 }
 
@@ -82,7 +80,7 @@ PERFORM_BACKUP () {
 	while read -r FILE EVENT
 	do
 		echo "${FILE}"
-		echo "${LOG_TIME} Programme Info: Watch File: ${FILE}: ${EVENT}" >> "${GET_LOG}"
+		echo "${LOG_TIME} Programme Info: Watch File: ${FILE}: ${EVENT}" >> "${LOG}"
 		GIT_MODIFIED_CHECK
 		GIT_COMMITS "${FILE}"
 	done < <(inotifywait -q -e close_write -m "${PROJECT_DIR}"/*)
