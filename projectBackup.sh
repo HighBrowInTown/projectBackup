@@ -14,9 +14,9 @@ USERNAME="Po-Pratik"
 USEREMAIL="pratik@safesquid.net"
 GIT_USERNAME=$(git config user.name)
 GIT_USEREMAIL=$(git config user.email)
-GIT_URL="https://github.com/Po-Pratik"
+GIT_URL="git@github.com"
 GIT_REPO="${PROJECT_NAME}"
-GIT_PROJECT_URL="${GIT_URL}/${GIT_REPO}"
+GIT_PROJECT_URL="${GIT_URL}:${USERNAME}/${GIT_REPO}"
 
 GIT_SET_SSH () {
 
@@ -59,12 +59,6 @@ GIT_CONN_CHECK () {
 	fi
 	
 }
-
-# GIT_BRANCH_CHECK () {
-
-
-# }
-
 
 GIT_COMMITS () {
 
