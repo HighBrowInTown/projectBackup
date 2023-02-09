@@ -14,7 +14,7 @@ GIT_USERNAME=$(git config user.name)
 GIT_USEREMAIL=$(git config user.email)
 GIT_URL="git@github.com"
 GIT_REPO="${PROJECT_NAME}"
-GIT_PROJECT_URL="${GIT_URL}:${USERNAME}/${GIT_REPO}"
+GIT_PROJECT_URL="${GIT_URL}:${USERNAME}/${GIT_REPO}.git"
 
 GIT_SET_SSH () {
 
