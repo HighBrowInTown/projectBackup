@@ -6,7 +6,6 @@ source settings.ini
 # source /opt/projectBackups/settings.ini
 #Project Variables
 PROJECT_DIR="${DIR}/${PROJECT_NAME}"
-BACKUP_TIME="$(date)"
 #Log Variables
 LOG_TIME=$(date "+%Y %m %d %T.%3N")
 #Git Variables
@@ -52,17 +51,20 @@ GIT_CONN_CHECK () {
 	then
 		echo "${LOG_TIME} Programme Error: SSH Permission denied (publickey)." >> "${LOG}"
 		exit 1
-	else
+	fi
+
+	GIT_REMOTE=$(git remote -v 2> /dev/null)
+	if  [ "x${GIT_REMOTE}" == "x0"  ]
+	then
 		git remote add origin "${GIT_PROJECT_URL}"
 	fi
-	
 }
 
 GIT_COMMITS () {
 
 	GIT_CONN_CHECK
     git add "${1}"
-	git commit -m "Performing backup: ${1} - ${BACKUP_TIME}"
+	git commit -m "${GIT_COMMIT_MSG}"
 	git push -u origin main
 
 }
